@@ -9,9 +9,13 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     private ArrayList<Student> students = new ArrayList<Student>();
     private ArrayList<Course> courses = new ArrayList<Course>();
 
-    private HashSet<String> sems = new HashSet<>();
+    private HashSet<String> sems = new LinkedHashSet<>();
     public StudentEnrolmentCommand() {
-        sems.add("2020A");
+
+        sems.add("2021A");
+        sems.add("2021B");
+        sems.add("2021C");
+
         String date = "2000-11-30";
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date dob = null;
@@ -39,22 +43,6 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         courses.add(cour2);
     }
 
-    private boolean checkStudent(String idStudent){
-        for (Student stu: students){
-            if (stu.getId().equals(idStudent)){
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean checkCourse(List<Course> courses, String idCourse){
-        for (Course cour: courses){
-            if (cour.getId().equals(idCourse)){
-                return true;
-            }
-        }
-        return false;
-    }
 
 
 
@@ -66,12 +54,19 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
         Scanner input = new Scanner(System.in);
 
+
+        int countStu = 0;
+        int countCourse = 0;
+        int countSem = 0;
+
         Student stu = null;
         while (checkStu){
+            System.out.println("-----All students can enroll-----");
             for (Student i: students){
-                System.out.print(i.getId() + "  ");
+                countStu++;
+                System.out.print("Id student "+countStu +": "+ i.getId() + "  ");
             }
-            System.out.print("Choose id student: ");
+            System.out.print("\nChoose id student: ");
             String idStu = input.nextLine();
             for (Student i: students){
                 if (i.getId().equals(idStu)){
@@ -80,16 +75,19 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                     break;
                 }
             }
+
             if (checkStu == true)
-            System.out.println("wrong id");
+            System.out.println("This id student does not exist!!!");
         }
 
         Course cou = null;
         while (checkCour){
+            System.out.println("-----All course that student can enroll-----");
             for (Course i: courses){
-                System.out.println(i.getId() + "  ");
+                countCourse++;
+                System.out.print("Id course "+countCourse +": "+i.getId() + "  ");
             }
-            System.out.print("Choose id course: ");
+            System.out.print("\nChoose id course: ");
             String idCour = input.nextLine();
             for (Course i: courses){
                 if (i.getId().equals(idCour)){
@@ -104,10 +102,12 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
         String sem = null;
         while (checkSem){
+            System.out.println("-----All semester that student can enroll-----");
             for (String i: sems){
-                System.out.println(i+ "  ");
+                countSem++;
+                System.out.println("Sem "+countSem +": "+i+ "  ");
             }
-            System.out.println("Choose id semester: ");
+            System.out.print("Choose id semester: ");
             sem = input.nextLine();
             for (String i: sems){
                 if (i.equals(sem)){
@@ -116,11 +116,38 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 }
             }
             if (checkSem == true)
-                System.out.println("wrong id");
+                System.out.println("wrong sem");
 
         }
+
         StudentEnrolment enroll = new StudentEnrolment(stu, cou, sem);
-        enrolments.add(enroll);
+
+//        if (enrolments.contains(enroll)){
+//            System.out.println("This enrolment has already existed");
+//            System.out.println("So cannot add the enrolment");
+//        }else{
+//            enrolments.add(enroll);
+
+//        }
+        Boolean checkDup = false;
+
+        for (StudentEnrolment student: enrolments){
+            if (student.getStudent().equals(stu) && student.getCourse().equals(cou) && student.getSem().equals(sem)){
+                checkDup = true;
+                System.out.println("This enrolment has already existed");
+                break;
+            }
+
+        }
+        if (checkDup == false){
+            enrolments.add(enroll);
+            System.out.println("Enroll successfully!!");
+            System.out.println("---------------------");
+        }
+
+
+
+
 
     }
 
@@ -132,7 +159,23 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     @Override
     public void update() {
+        Scanner input = new Scanner(System.in);
+        Set<String> idStuHasEnrol = new HashSet<>();
+        for (StudentEnrolment student1: enrolments){
+            idStuHasEnrol.add(student1.getStudent().getId());
+        }
 
+        System.out.println("The student has enrolments:");
+        for (String id: idStuHasEnrol){
+            System.out.println(id);
+        }
+
+        String idStu = input.nextLine();
+        for (String id: idStuHasEnrol){
+            if (idStu.equals(id)){
+
+            }
+        }
     }
 
     @Override
@@ -142,7 +185,8 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     @Override
     public void getAll() {
-        for (StudentEnrolment i: this.enrolments){
+        System.out.println("------All enrolments-----");
+        for (StudentEnrolment i: enrolments){
             System.out.println(i.toString());
         }
     }

@@ -39,6 +39,7 @@ public class Main {
 
         StudentEnrolmentCommand h = new StudentEnrolmentCommand();
         h.add();
+        h.add();
         h.getAll();
     }
 }
