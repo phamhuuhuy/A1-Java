@@ -36,5 +36,12 @@ public class StudentEnrolment {
         this.sem = sem;
     }
 
-
+    @Override
+    public String toString() {
+        return "StudentEnrolment{" +
+                "student=" + student.getId() +
+                ", course=" + course.getId() +
+                ", sem='" + sem + '\'' +
+                '}';
+    }
 }

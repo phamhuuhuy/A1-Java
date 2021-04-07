@@ -1,12 +1,14 @@
 package rmit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface StudentEnrolmentManager {
-    void add(List<Student> students, List<Course> courses);
+    void add();
     void delete();
     void update();
     void getOne();
     void getAll();
+
 
 }
