@@ -1,5 +1,6 @@
 package rmit;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, ParseException {
 //        // write your code here
 //
 //
@@ -38,8 +39,8 @@ public class Main {
 //        courses.add(cour1);
 
         StudentEnrolmentCommand h = new StudentEnrolmentCommand();
-        h.add();
-        h.add();
-        h.getAll();
+        h.update();
+
+
     }
 }
