@@ -77,6 +77,32 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
     }
 
+    public void printAllCourseFor1Student(){
+        Boolean checkStu = true;
+        Student student = null;
+        while (checkStu){
+            Boolean wrong = true;
+            System.out.println("-----All students can choose-----");
+            showStudent();
+            System.out.print("Choose id student: ");
+            Scanner input = new Scanner(System.in);
+            String idStu = input.nextLine();
+            for (Student i: students){
+                if (i.getId().equals(idStu)){
+                    student = i;
+                    checkStu = false;
+                    wrong = false;
+                    break;
+                }
+            }
+            if (wrong == true)
+                System.out.println("This id student does not exist!!!");
+        }
+
+        
+
+
+    }
     public boolean checkDupStudent(Student newStudent){
         if (students != null) {
             for (Student stu : students) {
@@ -270,9 +296,8 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             if (wrong == true)
                 System.out.println("This id student does not exist!!!");
         }
+
         int countEnrols = 1;
-
-
         System.out.println("------Enrolments this student has-----");
         for (StudentEnrolment i: enrolments){
             if (i.getStudent().getId().equals(student.getId())){
