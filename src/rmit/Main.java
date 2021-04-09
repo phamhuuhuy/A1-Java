@@ -6,41 +6,143 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
+    private static  StudentEnrolmentCommand enrolmentCommand;
+
+    static {
+        try {
+            enrolmentCommand = new StudentEnrolmentCommand();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
-//        // write your code here
-//
-//
-//        List<Student> students= new ArrayList<Student>();
-//        String date = "2000-11-30";
-//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//        Date dob = null;
-//        try {
-//            dob = df.parse(date);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        Student stu1 = new Student("001", "NguyenQuocHuy", dob);
-//        students.add(stu1);
-//
-//        String date1 = "2000-07-07";
-//        try {
-//            dob = df.parse(date1);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        Student stu2 = new Student("002", "Pham Huu Huy", dob);
-//        students.add(stu2);
-//
-//        List<Course> courses= new ArrayList<Course>();
-//        Course cour1 = new Course("S123", "Engineering","1234354654");
-//        courses.add(cour1);
+        mainMenu();
+    }
+    public static void mainMenu() throws FileNotFoundException, ParseException {
+        Scanner sc = new Scanner(System.in);
 
-        StudentEnrolmentCommand h = new StudentEnrolmentCommand();
-        h.printAllStudentsFor1CourseFor1Sem();
 
+            while (true) {
+                System.out.println("------------------------");
+                System.out.println("What do you want to do: ");
+                System.out.println("1. CRUD student enrolment");
+                System.out.println("2. Report");
+                System.out.println("3. Exit");
+                System.out.println("------------------------");
+                System.out.print("Your choice: ");
+                String choice = sc.next();
+                if (choice.equals("1")) {
+                    crudMenu();
+                    return;
+                } else if (choice.equals("2")) {
+                    reportMenu();
+                    return;
+                } else if (choice.equals("3")){
+                    return;
+                } else {
+                    System.out.println("Wrong input");
+                }
+            }
 
     }
+    public static void crudMenu() throws FileNotFoundException, ParseException {
+        Scanner sc = new Scanner(System.in);
+
+
+
+
+            while (true) {
+                System.out.println("------------------------");
+                System.out.println("What do you want to do: ");
+                System.out.println("1. View all enrolment \n2. Adding new enrolment \n3. Delete enrolment \n4. Update enrolment\n5. Return to Main Menu");
+                System.out.println("6. Exit");
+                System.out.println("------------------------");
+                System.out.print("Your choice: ");
+                String choice = sc.next();
+                if (choice.equals("1")) {
+                    enrolmentCommand.getAll();
+                    break;
+                } else if (choice.equals("2")) {
+                    enrolmentCommand.add();
+                    break;
+                } else if (choice.equals("3")) {
+                    enrolmentCommand.delete();
+                    break;
+                } else if (choice.equals("4")) {
+                    enrolmentCommand.update();
+                    break;
+                } else if (choice.equals("5")) {
+                    mainMenu();
+                    return;
+                } else if (choice.equals("6")) {
+                    return;
+                } else {
+                    System.out.println("Wrong input");
+                }
+            }
+            while (true) {
+                System.out.print("Do you want to continue managing? (y/n): ");
+                String cont = sc.next();
+                if (cont.equals("y") || cont.equals("Y")) {
+                    crudMenu();
+                    break;
+                } else if (cont.equals("n") || cont.equals("N")) {
+
+                    break;
+                } else {
+                    System.out.println("Wrong input");
+                }
+            }
+
+    }
+    public static void reportMenu() throws FileNotFoundException, ParseException {
+        Scanner sc = new Scanner(System.in);
+
+            while (true) {
+                System.out.println("------------------------");
+                System.out.println("What do you want to do: ");
+                System.out.println("1. Print all courses for one student and one semester \n2. Print all students for one course and one semester \n3. Print all courses offered in 1 semester \n4. Return to Main Menu");
+                System.out.println("5. Exit");
+                System.out.println("------------------------");
+                System.out.print("Your choice: ");
+                String choice = sc.next();
+                if (choice.equals("1")) {
+                    enrolmentCommand.printAllCoursesFor1StudentFor1Sem();
+                    break;
+                } else if (choice.equals("2")) {
+                    enrolmentCommand.printAllStudentsFor1CourseFor1Sem();
+                    break;
+                } else if (choice.equals("3")) {
+                    enrolmentCommand.printAllCoursesOfferedFor1Sem();
+                    break;
+                } else if (choice.equals("4")) {
+                    mainMenu();
+                    return;
+                } else if (choice.equals("5")) {
+                    return;
+                } else {
+                    System.out.println("Wrong input");
+                }
+            }
+            while (true) {
+                System.out.print("Do you want to continue managing? (y/n): ");
+                String cont = sc.next();
+                if (cont.equals("y") || cont.equals("Y")) {
+                    reportMenu();
+                    break;
+                } else if (cont.equals("n") || cont.equals("N")) {
+                    break;
+                } else {
+                    System.out.println("Wrong input");
+                }
+            }
+        }
+
 }

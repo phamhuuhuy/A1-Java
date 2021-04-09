@@ -6,10 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class StudentEnrolmentCommand implements StudentEnrolmentManager{
+
+    //List of enrolment
     private ArrayList<StudentEnrolment> enrolments = new ArrayList<>();
+
+    //List of students
     private HashSet<Student> students = new LinkedHashSet<>();
+
+    //List of courses
     private ArrayList<Course> courses = new ArrayList<>();
 
+    //List of semester
     private HashSet<String> sems = new LinkedHashSet<>();
 
     public StudentEnrolmentCommand() throws FileNotFoundException, ParseException {
@@ -17,116 +24,153 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     }
 
+    public void menuCRUD(){
+
+    }
+
+    //Get information from CSV file
     private void getEnrolment() throws FileNotFoundException, ParseException {
+        //Read the file
         File fileCSV = new File("default.csv");
         Scanner input = new Scanner(fileCSV);
         HashSet<String> idStu = new HashSet<>();
         while (input.hasNext()){
+            //Read by line
             String line = input.nextLine();
-
+            //split by ","
             String[] token = line.split(",");
+            //change String to date format
             token[0] = token[0].replaceAll("[^a-zA-Z0-9]", "");
             SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
             Date dob = df.parse(token[2]);
 
-
+            //create the student object
             Student student = new Student(token[0], token[1], dob);
+            //add student to list and check to not have duplicate
             if (!checkDupStudent(student)){
                 students.add(student);
             }
 
-
+            //create the course object
             Course course = new Course(token[3], token[4], token[5]);
+            //add course to list and check to not have duplicate
             if (!checkDupCourse(course)){
                 courses.add(course);
             }
 
+            //add the semester to list
             sems.add(token[6]);
 
+            //add student, course and semester to enrolment object
             StudentEnrolment enrolment = new StudentEnrolment(student, course, token[6]);
+
+            //add enrolment to list enrolments
             enrolments.add(enrolment);
         }
+        input.close();
     }
 
+    //print all courses offered for one semester
     public void printAllCoursesOfferedFor1Sem(){
+        //String to save all information of report
         String report = "";
+        //number of course in sem
         int count = 1;
-        for (String i: sems){
-            report += "Semester "+i+ ": \n";
-            System.out.println("Semester "+i+ ": ");
+        //each semester
+        for (String sem: sems){
+            report += "Semester "+sem+ ": \n";
+            System.out.println("Semester "+sem+ ": ");
             for (Course course: courses){
                 boolean check = false;
-                for (StudentEnrolment h: enrolments){
-                    if (h.getCourse().getId().equals(course.getId()) && h.getSem().equals(i)){
+                for (StudentEnrolment enrolment: enrolments){
+                    if (enrolment.getCourse().getId().equals(course.getId()) && enrolment.getSem().equals(sem)){
+                        //check course in semester
                         check = true;
                     }
                 }
                 if (check){
+                    //if right add Course to String report
                     report += " Course "+count+": "+course.getName()+"\n";
                     System.out.println(" Course "+count+": "+course.getName());
                 }
             }
         }
-        wantAddToCSV("report1.csv", report);
+
+        //calling add CSV
+        wantAddToCSV("report3.csv", report);
     }
 
+    //print all students for one course for one semester
     public void printAllStudentsFor1CourseFor1Sem(){
+        //String to save all information of report
         String report = "";
+        //number of course in sem
         int count= 1;
-        for (Course i: courses){
-            report += "Course "+count+ ": "+i.getId() +"\n";
-            System.out.println("Course "+count+ ": "+i.getId());
+        //each course
+        for (Course course: courses){
+            report += "Course "+count+ ": "+course.getId() +"\n";
+            System.out.println("Course "+count+ ": "+course.getId());
             count++;
             HashSet<String> semesters = new HashSet<>();
-            for (StudentEnrolment h: enrolments){
-                if (h.getCourse().getId().equals(i.getId())){
-                    semesters.add(h.getSem());
+            for (StudentEnrolment enrolment: enrolments){
+                if (enrolment.getCourse().getId().equals(course.getId())){
+                    //add sem to hashset to remove duplicate
+                    semesters.add(enrolment.getSem());
                 }
             }
-            for (String j: semesters){
-                report += "  Semester "+j+ ": \n";
-                System.out.println("  Semester "+j+ ": ");
-                for (StudentEnrolment k: enrolments){
-                    if (k.getCourse().getId().equals(i.getId()) && k.getSem().equals(j)){
-                        report += "   " + k.getStudent().toString()+ "\n";
-                        System.out.println("   " + k.getStudent().toString());
+            // each sem in course
+            for (String sem: semesters){
+                report += "  Semester "+sem+ ": \n";
+                System.out.println("  Semester "+sem+ ": ");
+                for (StudentEnrolment enrolment: enrolments){
+                    if (enrolment.getCourse().getId().equals(course.getId()) && enrolment.getSem().equals(sem)){
+                        // all students in this course and this semester
+                        report += "   " + enrolment.getStudent().toString()+ "\n";
+                        System.out.println("   " + enrolment.getStudent().toString());
                     }
                 }
             }
         }
+        //calling add CSV
         wantAddToCSV("report2.csv", report);
 
     }
 
-
+    //print all courses for one student for one sem
     public void printAllCoursesFor1StudentFor1Sem(){
+        //String to save all information of report
         String report = "";
+        //number of student in sem
         int count= 1;
-        for (Student i: students){
-            report += "Student "+count+ ": "+i.getId()+"\n";
-            System.out.println("Student "+count+ ": "+i.getId());
+        //each student
+        for (Student student: students){
+            report += "Student "+count+ ": "+student.getId()+"\n";
+            System.out.println("Student "+count+ ": "+student.getId());
             count++;
             HashSet<String> semesters = new HashSet<>();
-            for (StudentEnrolment h: enrolments){
-                if (h.getStudent().getId().equals(i.getId())){
-                    semesters.add(h.getSem());
+            for (StudentEnrolment enrolment: enrolments){
+                if (enrolment.getStudent().getId().equals(student.getId())){
+                    //check sem the student study and add to semester hashset
+                    semesters.add(enrolment.getSem());
                 }
             }
-            for (String j: semesters){
-                report += "  Semester "+j+ ": \n";
-                System.out.println("  Semester "+j+ ": ");
-                for (StudentEnrolment k: enrolments){
-                    if (k.getStudent().getId().equals(i.getId()) && k.getSem().equals(j)){
-                        report += "   " + k.getCourse().toString()+"\n";
-                        System.out.println("   " + k.getCourse().toString());
+            for (String sem: semesters){
+                report += "  Semester "+sem+ ": \n";
+                System.out.println("  Semester "+sem+ ": ");
+                for (StudentEnrolment enrolment: enrolments){
+                    if (enrolment.getStudent().getId().equals(student.getId()) && enrolment.getSem().equals(sem)){
+                        // all courses in this student and this semester
+                        report += "   " + enrolment.getCourse().toString()+"\n";
+                        System.out.println("   " + enrolment.getCourse().toString());
                     }
                 }
             }
         }
+        //add report to CSV file
         wantAddToCSV("report1.csv", report);
     }
 
-
+    //function to add report into CSV file
     private static void writeToFile(String fileName, String line, boolean append) {
         PrintWriter output = null;
         try {
@@ -143,6 +187,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     }
 
+    //function to add user
     private void wantAddToCSV(String fileName, String line){
         while(true){
             System.out.print("Do you want to add report to CSV file? (y/n): ");
@@ -157,6 +202,8 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             System.out.println("Wrong input");
         }
     }
+
+    //check duplicate students
     private boolean checkDupStudent(Student newStudent){
         if (students != null) {
             for (Student stu : students) {
@@ -168,6 +215,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         return false;
     }
 
+    //check duplicate courses
     private boolean checkDupCourse(Course newCourse){
         if (courses != null) {
             for (Course cour : courses) {
@@ -178,69 +226,77 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
         return false;
     }
+
+    //show all students
     private void showStudent(){
         int countStu = 0;
-        for (Student i: students){
+        for (Student student: students){
             countStu++;
-            System.out.print("Id student "+countStu +": "+ i.getId() + "  ");
+            System.out.print("Id student "+countStu +": "+ student.getId() + "  ");
 
         }
         System.out.println("");
     }
 
+    //check id student input
     private Student checkStudent(HashSet<Student> studentList){
-
          while (true){
              System.out.println("-----All students can choose-----");
              showStudent();
              System.out.print("Choose id student: ");
              Scanner input = new Scanner(System.in);
              String idStu = input.nextLine();
-             for (Student i: students){
-                 if (i.getId().equals(idStu)){
-                     return i ;
+             for (Student student: students){
+                 //check id student and return student object
+                 if (student.getId().equals(idStu)){
+                     return student ;
                  }
              }
+             //wrong let user input again
              System.out.println("This id student does not exist!!!");
          }
     }
 
+    //show all courses
     private void showCourse(){
         int countCour = 0;
-        for (Course i: courses){
+        for (Course course: courses){
             countCour++;
-            System.out.print("Id course "+countCour +": "+ i.getId() + "  ");
+            System.out.print("Id course "+countCour +": "+ course.getId() + "  ");
         }
         System.out.println("");
     }
 
+    //check id course input
     private Course checkCourse(){
-
         while (true){
             System.out.println("-----All course that student can enroll-----");
             showCourse();
-
             Scanner input = new Scanner(System.in);
             System.out.print("Choose id course: ");
             String idCour = input.nextLine();
-            for (Course i: courses){
-                if (i.getId().equals(idCour)){
-                    return i;
+            for (Course course: courses){
+                //check id course and return course object
+                if (course.getId().equals(idCour)){
+                    return course;
                 }
             }
+            //wrong let user input again
             System.out.println("This id course does not exist!!!");
         }
     }
 
+    //show all semesters
     private void showSem(){
         int countSem = 0;
-        for (String i: sems){
+        for (String sem: sems){
             countSem++;
-            System.out.println("Sem "+countSem +": "+i+ "  ");
+            System.out.println("Sem "+countSem +": "+sem+ "  ");
         }
         System.out.println("");
     }
 
+    //check semester input
     private String checkSem(){
         while (true){
             System.out.println("-----All semester that student can enroll-----");
@@ -248,45 +304,50 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             Scanner input = new Scanner(System.in);
             System.out.print("Choose sem: ");
             String sem = input.nextLine();
-            for (String i: sems){
-                if (i.equals(sem)){
-                    return i;
+            for (String semester: sems){
+                //check the semester and return String semester
+                if (sem.equals(semester)){
+                    return semester;
                 }
             }
+            //wrong let user input again
             System.out.println("This sem does not exist!!!");
         }
     }
 
+    //function check enrolment duplicate when adding
     private void checkDupEnrol(){
+        //calling check student function
         Student stu = checkStudent(students);
-
-
+        //calling check course function
         Course cou = checkCourse();
-
-
+        //calling check semester function
         String sem = checkSem();
-
-
+        //create the enrolment object
         StudentEnrolment enroll = new StudentEnrolment(stu, cou, sem);
 
         Boolean checkDup = false;
-
-        for (StudentEnrolment student: enrolments){
-            if (student.getStudent().equals(stu) && student.getCourse().equals(cou) && student.getSem().equals(sem)){
+        //go all enrolment
+        for (StudentEnrolment enrolment: enrolments){
+            //check duplicate enrolment
+            if (enrolment.getStudent().equals(stu) && enrolment.getCourse().equals(cou) && enrolment.getSem().equals(sem)){
                 checkDup = true;
                 System.out.println("This enrolment has already existed");
                 break;
             }
         }
         if (checkDup == false){
+            //if no duplicate, add in to enrolment list
             enrolments.add(enroll);
             System.out.println("Enroll successfully!!");
             System.out.println("---------------------");
         }
     }
+
+    //function add
     @Override
     public void add() {
-
+        //calling function
         checkDupEnrol();
 
     }
@@ -294,28 +355,55 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     @Override
     public void delete() {
-        System.out.println("------All enrolments-----");
+
 
         while (true){
+            if (enrolments.isEmpty()){
+                System.out.println("Dont have any enrolment of student for delete");
+                break;
+            }
+            System.out.println("------All enrolments-----");
             int idEnrol = 1;
-            for (StudentEnrolment i: enrolments){
-                System.out.println(idEnrol+": "+i.toString());
+            //list all enrolment
+            for (StudentEnrolment enrolment: enrolments){
+                System.out.println(idEnrol+": "+enrolment.toString());
                 idEnrol++;
             }
             Scanner input = new Scanner(System.in);
             System.out.print("Choose number of enrolment you want to delete: ");
-            Integer number = input.nextInt();
-            if (number > 0 && number<=enrolments.size()){
-                enrolments.remove(number-1);
-                break;
+            String userInput = input.nextLine();
+            if (isNumeric(userInput)){
+                int number = Integer.parseInt(userInput);
+                if (number> 0 && number<=enrolments.size()){
+                    //remove with index
+                    enrolments.remove(number-1);
+                    break;
+                }
+            }else{
+                //wrong input, let user input again
+                System.out.println("This enrolment does not exist!!!");
             }
-            System.out.println("This enrolment does not exist!!!");
+
         }
 
     }
 
+    //check input String is numeric or not
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int d = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void update() {
+        //create the list of enrolment of this student
         ArrayList<StudentEnrolment> enrolmentListOfStudent = new ArrayList<>();
         Boolean checkStu = true;
         Student student = null;
@@ -327,9 +415,10 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             System.out.print("Choose id student: ");
 
             String idStu = input.nextLine();
-            for (Student i: students){
-                if (i.getId().equals(idStu)){
-                    student = i;
+            for (Student stu: students){
+                //check student input
+                if (stu.getId().equals(idStu)){
+                    student = stu;
                     checkStu = false;
                     wrong = false;
                     break;
@@ -341,6 +430,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
         int countEnrols = 1;
         System.out.println("------Enrolments this student has-----");
+        //list all enrolment of this student
         for (StudentEnrolment i: enrolments){
             if (i.getStudent().getId().equals(student.getId())){
                 enrolmentListOfStudent.add(i);
@@ -356,8 +446,9 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             System.out.println("1. Add enrolment");
             System.out.println("2. Delete");
             System.out.print("Your choice: ");
-            Integer choice = input.nextInt();
-            if (choice == 1){
+            String choice = input.nextLine();
+            //choose 1 for adding
+            if (choice.equals("1")){
 
                 Course cour = checkCourse();
 
@@ -384,10 +475,19 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                     break;
                 }
                 run = false;
-            }else if (choice == 2){
-                System.out.println("------All enrolments-----");
+            }else if (choice.equals("2")){
+
+
+                //choose 2 for delete
+
 
                 while (true){
+                    if (enrolmentListOfStudent.isEmpty()){
+                        System.out.println("Dont have any enrolment of student for delete");
+                        checkInput = true;
+                        break;
+                    }
+                    System.out.println("------All enrolments-----");
                     int idEnrol1 = 1;
                     for (StudentEnrolment i: enrolmentListOfStudent){
                         System.out.println(idEnrol1+": "+i.toString());
@@ -395,18 +495,28 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                     }
 
                     System.out.print("Choose number of enrolment you want to delete: ");
-                    Integer number = input.nextInt();
-                    if (number > 0 && number<=enrolmentListOfStudent.size()){
-                        enrolments.remove(enrolmentListOfStudent.get(number-1));
+                    String userInput = input.nextLine();
+                    if (isNumeric(userInput)){
+                        int number = Integer.parseInt(userInput);
+                        if (number > 0 && number<=enrolmentListOfStudent.size()){
+                            enrolments.remove(enrolmentListOfStudent.get(number-1));
 //                        enrolments.removeIf(enrol -> enrolmentListOfStudent.get(number - 1).getStudent().getId().equals(enrol.getStudent().getId()) && enrolmentListOfStudent.get(number - 1).getCourse().getId().equals(enrol.getCourse().getId()) && enrolmentListOfStudent.get(number - 1).getSem().equals(enrol.getSem()));
 
-                        System.out.println("Delete Successfully");
-                        checkInput = true;
-                        break;
+                            System.out.println("Delete Successfully");
+                            checkInput = true;
+                            break;
+                        }else{
+                            System.out.println("This enrolment does not exist!!!");
+                        }
+                    }else {
+                        System.out.println("This enrolment does not exist!!!");
                     }
-                    System.out.println("This enrolment does not exist!!!");
+
+
                 }
                 run = false;
+
+
             }
             if (checkInput == false){
                 System.out.println("Wrong input");
@@ -425,10 +535,11 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     @Override
     public void getAll() {
+        //list all enrolments
         System.out.println("------All enrolments-----");
         int count = 1;
-        for (StudentEnrolment i: enrolments){
-            System.out.println("Enrolment " + count+ ": "+i.toString());
+        for (StudentEnrolment enrolment: enrolments){
+            System.out.println("Enrolment " + count+ ": "+enrolment.toString());
             count++;
         }
     }
