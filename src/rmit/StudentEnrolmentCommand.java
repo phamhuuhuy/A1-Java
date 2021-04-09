@@ -17,7 +17,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     }
 
-    public void getEnrolment() throws FileNotFoundException, ParseException {
+    private void getEnrolment() throws FileNotFoundException, ParseException {
         File fileCSV = new File("default.csv");
         Scanner input = new Scanner(fileCSV);
         HashSet<String> idStu = new HashSet<>();
@@ -67,7 +67,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 }
             }
         }
-        writeToFile("report3.csv", report, false);
+        wantAddToCSV("report1.csv", report);
     }
 
     public void printAllStudentsFor1CourseFor1Sem(){
@@ -94,9 +94,10 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 }
             }
         }
-        writeToFile("report2.csv", report, false);
+        wantAddToCSV("report2.csv", report);
 
     }
+
 
     public void printAllCoursesFor1StudentFor1Sem(){
         String report = "";
@@ -122,11 +123,11 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 }
             }
         }
-        writeToFile("report1.csv", report, false);
+        wantAddToCSV("report1.csv", report);
     }
 
 
-    public static void writeToFile(String fileName, String line, boolean append) {
+    private static void writeToFile(String fileName, String line, boolean append) {
         PrintWriter output = null;
         try {
             output = new PrintWriter(new FileWriter(fileName, append));
@@ -141,7 +142,22 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
 
     }
-    public boolean checkDupStudent(Student newStudent){
+
+    private void wantAddToCSV(String fileName, String line){
+        while(true){
+            System.out.print("Do you want to add report to CSV file? (y/n): ");
+            Scanner input = new Scanner(System.in);
+            String answer = input.nextLine();
+            if (answer.equals("y")){
+                writeToFile(fileName, line, false);
+                break;
+            }else if (answer.equals("n")){
+                break;
+            }
+            System.out.println("Wrong input");
+        }
+    }
+    private boolean checkDupStudent(Student newStudent){
         if (students != null) {
             for (Student stu : students) {
                 if (stu.getId().trim().equals(newStudent.getId())) {
@@ -152,7 +168,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         return false;
     }
 
-    public boolean checkDupCourse(Course newCourse){
+    private boolean checkDupCourse(Course newCourse){
         if (courses != null) {
             for (Course cour : courses) {
                 if (cour.getId().equals(newCourse.getId())) {
@@ -162,7 +178,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
         return false;
     }
-    public void showStudent(){
+    private void showStudent(){
         int countStu = 0;
         for (Student i: students){
             countStu++;
@@ -172,7 +188,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         System.out.println("");
     }
 
-    public Student checkStudent(HashSet<Student> studentList){
+    private Student checkStudent(HashSet<Student> studentList){
 
          while (true){
              System.out.println("-----All students can choose-----");
@@ -189,7 +205,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
          }
     }
 
-    public void showCourse(){
+    private void showCourse(){
         int countCour = 0;
         for (Course i: courses){
             countCour++;
@@ -198,7 +214,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         System.out.println("");
     }
 
-    public Course checkCourse(){
+    private Course checkCourse(){
 
         while (true){
             System.out.println("-----All course that student can enroll-----");
@@ -216,7 +232,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
     }
 
-    public void showSem(){
+    private void showSem(){
         int countSem = 0;
         for (String i: sems){
             countSem++;
@@ -225,7 +241,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         System.out.println("");
     }
 
-    public String checkSem(){
+    private String checkSem(){
         while (true){
             System.out.println("-----All semester that student can enroll-----");
             showSem();
@@ -241,7 +257,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
     }
 
-    public void checkDupEnrol(){
+    private void checkDupEnrol(){
         Student stu = checkStudent(students);
 
 

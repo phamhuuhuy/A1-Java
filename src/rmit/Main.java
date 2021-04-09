@@ -40,8 +40,7 @@ public class Main {
 
         StudentEnrolmentCommand h = new StudentEnrolmentCommand();
         h.printAllStudentsFor1CourseFor1Sem();
-        h.printAllCoursesFor1StudentFor1Sem();
-        h.printAllCoursesOfferedFor1Sem();
+
 
     }
 }
