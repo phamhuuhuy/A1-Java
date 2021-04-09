@@ -38,7 +38,7 @@ public class StudentEnrolment {
 
     @Override
     public String toString() {
-        return "Enrolment:" +
+        return
                 "student= " + student.getId() +
                 ", course= " + course.getId() +
                 ", sem= " + sem + "\n";

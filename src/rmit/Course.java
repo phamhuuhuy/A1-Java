@@ -34,4 +34,12 @@ public class Course {
     public void setNumOfCre(String numOfCre) {
         this.numOfCre = numOfCre;
     }
+
+    @Override
+    public String toString() {
+        return "Course: " +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", numOfCre='" + numOfCre + '\'';
+    }
 }

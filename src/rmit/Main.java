@@ -39,8 +39,9 @@ public class Main {
 //        courses.add(cour1);
 
         StudentEnrolmentCommand h = new StudentEnrolmentCommand();
-        h.update();
-
+        h.printAllStudentsFor1CourseFor1Sem();
+        h.printAllCoursesFor1StudentFor1Sem();
+        h.printAllCoursesOfferedFor1Sem();
 
     }
 }
