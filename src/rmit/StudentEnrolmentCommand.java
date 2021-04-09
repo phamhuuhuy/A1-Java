@@ -70,6 +70,33 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         writeToFile("report3.csv", report, false);
     }
 
+    public void printAllStudentsFor1CourseFor1Sem(){
+        String report = "";
+        int count= 1;
+        for (Course i: courses){
+            report += "Course "+count+ ": "+i.getId() +"\n";
+            System.out.println("Course "+count+ ": "+i.getId());
+            count++;
+            HashSet<String> semesters = new HashSet<>();
+            for (StudentEnrolment h: enrolments){
+                if (h.getCourse().getId().equals(i.getId())){
+                    semesters.add(h.getSem());
+                }
+            }
+            for (String j: semesters){
+                report += "  Semester "+j+ ": \n";
+                System.out.println("  Semester "+j+ ": ");
+                for (StudentEnrolment k: enrolments){
+                    if (k.getCourse().getId().equals(i.getId()) && k.getSem().equals(j)){
+                        report += "   " + k.getStudent().toString()+ "\n";
+                        System.out.println("   " + k.getStudent().toString());
+                    }
+                }
+            }
+        }
+        writeToFile("report2.csv", report, false);
+
+    }
 
     public void printAllCoursesFor1StudentFor1Sem(){
         String report = "";
