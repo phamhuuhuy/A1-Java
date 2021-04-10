@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
     private static  StudentEnrolmentCommand enrolmentCommand;
 
     static {
@@ -28,8 +29,6 @@ public class Main {
     }
     public static void mainMenu() throws FileNotFoundException, ParseException {
         Scanner sc = new Scanner(System.in);
-
-
             while (true) {
                 System.out.println("------------------------");
                 System.out.println("What do you want to do: ");

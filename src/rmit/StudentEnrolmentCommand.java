@@ -545,7 +545,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     @Override
     public void getOne() {
         ArrayList<StudentEnrolment> enrolmentListOfStudent = new ArrayList<>();
-        ArrayList<String> semesterEnrolment = new ArrayList<>();
+        HashSet<String> semesterEnrolment = new HashSet<>();
         Scanner input = new Scanner(System.in);
         Boolean checkStu = true;
         Student student = null;
@@ -569,52 +569,21 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             if (wrong == true)
                 System.out.println("This id student does not exist!!!");
         }
+
+
         for (StudentEnrolment enrolment: enrolments){
             if (enrolment.getStudent().getId().equals(student.getId())){
-                enrolmentListOfStudent.add(enrolment);
-            }
-        }
-
-        Boolean checkCourse = true;
-        Course course =null;
-        while(checkCourse){
-            Boolean wrong = true;
-            if (enrolmentListOfStudent.isEmpty()){
-                System.out.println("Dont have any course of student for observe");
-                break;
-            }
-            System.out.println("------All course-----");
-            int idEnrol1 = 1;
-            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
-                System.out.println(idEnrol1+": "+ studentCourse.getCourse());
-                idEnrol1++;
-
-            }
-
-            System.out.print("Choose id course:");
-            String idCour = input.nextLine();
-            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
-                //check id course and return course object
-                if (studentCourse.getCourse().getId().equals(idCour)){
-                    course = studentCourse.getCourse();
-                    checkCourse = false;
-                    wrong = false;
-                }
-            }
-            //wrong let user input again
-            if (wrong == true){
-                System.out.println("This id course does not exist!!!");
-            }
-        }
-
-        for (StudentEnrolment enrolment: enrolments){
-            if (enrolment.getStudent().getId().equals(student.getId()) && enrolment.getCourse().getId().equals(course.getId())){
                 semesterEnrolment.add(enrolment.getSem());
             }
         }
+
         Boolean checkSem = true;
         String semester =null;
         while (checkSem){
+            if (enrolmentListOfStudent.isEmpty()){
+                System.out.println("Dont have any enrolment of student for observe");
+                return;
+            }
             Boolean wrong = true;
             if (semesterEnrolment.isEmpty()){
                 System.out.println("Dont have any semester of student and course for observe");
@@ -641,6 +610,43 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 System.out.println("This sem does not exist!!!");
             }
         }
+
+        for (StudentEnrolment enrolment: enrolments){
+            if (enrolment.getStudent().getId().equals(student.getId()) && enrolment.getSem().equals(semester)){
+                enrolmentListOfStudent.add(enrolment);
+            }
+        }
+        Boolean checkCourse = true;
+        Course course =null;
+        while(checkCourse){
+            Boolean wrong = true;
+
+            System.out.println("------All course-----");
+            int idEnrol1 = 1;
+            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
+                System.out.println(idEnrol1+": "+ studentCourse.getCourse().getId());
+                idEnrol1++;
+
+            }
+
+            System.out.print("Choose id course:");
+            String idCour = input.nextLine();
+            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
+                //check id course and return course object
+                if (studentCourse.getCourse().getId().equals(idCour)){
+                    course = studentCourse.getCourse();
+                    checkCourse = false;
+                    wrong = false;
+                }
+            }
+            //wrong let user input again
+            if (wrong == true){
+                System.out.println("This id course does not exist!!!");
+            }
+        }
+
+
+
         System.out.println("This enrolment: ");
         System.out.println(student.toString() +" " + course.toString() + " Semester: " + semester);
     }
