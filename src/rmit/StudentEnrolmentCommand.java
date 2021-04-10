@@ -24,14 +24,28 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     }
 
-    public void menuCRUD(){
+    public String fileNameInput(){
+        while (true){
+            System.out.print("Do you want to add your file? (y/n): ");
+            Scanner input = new Scanner(System.in);
+            String yesOrNo = input.nextLine();
+            if (yesOrNo.equals("y")){
+                System.out.print("Input file name: ");
+                String fileName = input.nextLine();
+                return fileName;
+            }else if (yesOrNo.equals("n")){
+                String fileName = "default.csv";
+                return fileName;
+            }
+            System.out.println("Wrong input");
+        }
 
     }
 
     //Get information from CSV file
     private void getEnrolment() throws FileNotFoundException, ParseException {
         //Read the file
-        File fileCSV = new File("default.csv");
+        File fileCSV = new File(fileNameInput());
         Scanner input = new Scanner(fileCSV);
         HashSet<String> idStu = new HashSet<>();
         while (input.hasNext()){
@@ -431,10 +445,10 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         int countEnrols = 1;
         System.out.println("------Enrolments this student has-----");
         //list all enrolment of this student
-        for (StudentEnrolment i: enrolments){
-            if (i.getStudent().getId().equals(student.getId())){
-                enrolmentListOfStudent.add(i);
-                System.out.println("Enrolment "+countEnrols+": course= "+ i.getCourse().getId() + ", Sem= " + i.getSem());
+        for (StudentEnrolment enrolment: enrolments){
+            if (enrolment.getStudent().getId().equals(student.getId())){
+                enrolmentListOfStudent.add(enrolment);
+                System.out.println("Enrolment "+countEnrols+": course= "+ enrolment.getCourse().getId() + ", Sem= " + enrolment.getSem());
                 countEnrols++;
             }
         }
@@ -489,8 +503,8 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                     }
                     System.out.println("------All enrolments-----");
                     int idEnrol1 = 1;
-                    for (StudentEnrolment i: enrolmentListOfStudent){
-                        System.out.println(idEnrol1+": "+i.toString());
+                    for (StudentEnrolment studentEnrolment: enrolmentListOfStudent){
+                        System.out.println(idEnrol1+": "+studentEnrolment.toString());
                         idEnrol1++;
                     }
 
@@ -530,7 +544,105 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     @Override
     public void getOne() {
+        ArrayList<StudentEnrolment> enrolmentListOfStudent = new ArrayList<>();
+        ArrayList<String> semesterEnrolment = new ArrayList<>();
+        Scanner input = new Scanner(System.in);
+        Boolean checkStu = true;
+        Student student = null;
+        while (checkStu){
+            Boolean wrong = true;
+            System.out.println("-----All students can choose-----");
+            showStudent();
+            System.out.print("Choose id student: ");
 
+            String idStu = input.nextLine();
+            for (Student stu: students){
+                //check student input
+                if (stu.getId().equals(idStu)){
+                    student = stu;
+                    checkStu = false;
+                    wrong = false;
+
+                    break;
+                }
+            }
+            if (wrong == true)
+                System.out.println("This id student does not exist!!!");
+        }
+        for (StudentEnrolment enrolment: enrolments){
+            if (enrolment.getStudent().getId().equals(student.getId())){
+                enrolmentListOfStudent.add(enrolment);
+            }
+        }
+
+        Boolean checkCourse = true;
+        Course course =null;
+        while(checkCourse){
+            Boolean wrong = true;
+            if (enrolmentListOfStudent.isEmpty()){
+                System.out.println("Dont have any course of student for observe");
+                break;
+            }
+            System.out.println("------All course-----");
+            int idEnrol1 = 1;
+            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
+                System.out.println(idEnrol1+": "+ studentCourse.getCourse());
+                idEnrol1++;
+
+            }
+
+            System.out.print("Choose id course:");
+            String idCour = input.nextLine();
+            for (StudentEnrolment studentCourse: enrolmentListOfStudent){
+                //check id course and return course object
+                if (studentCourse.getCourse().getId().equals(idCour)){
+                    course = studentCourse.getCourse();
+                    checkCourse = false;
+                    wrong = false;
+                }
+            }
+            //wrong let user input again
+            if (wrong == true){
+                System.out.println("This id course does not exist!!!");
+            }
+        }
+
+        for (StudentEnrolment enrolment: enrolments){
+            if (enrolment.getStudent().getId().equals(student.getId()) && enrolment.getCourse().getId().equals(course.getId())){
+                semesterEnrolment.add(enrolment.getSem());
+            }
+        }
+        Boolean checkSem = true;
+        String semester =null;
+        while (checkSem){
+            Boolean wrong = true;
+            if (semesterEnrolment.isEmpty()){
+                System.out.println("Dont have any semester of student and course for observe");
+                break;
+            }
+            System.out.println("------All semester-----");
+            int idEnrol1 = 1;
+            for (String sem: semesterEnrolment){
+                System.out.println(idEnrol1+": "+ sem);
+                idEnrol1++;
+            }
+            System.out.print("Choose sem: ");
+            String sem = input.nextLine();
+            for (String semesterStudent: sems){
+                //check the semester and return String semester
+                if (semesterStudent.equals(sem)){
+                    semester = semesterStudent;
+                    checkSem = false;
+                    wrong = false;
+                }
+            }
+            //wrong let user input again
+            if (wrong == true){
+                System.out.println("This sem does not exist!!!");
+            }
+        }
+        System.out.println("This enrolment: ");
+        System.out.println(student.toString() +" " + course.toString() + " Semester: " + semester);
     }
 
     @Override

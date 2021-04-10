@@ -23,6 +23,7 @@ public class Main {
 
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
+
         mainMenu();
     }
     public static void mainMenu() throws FileNotFoundException, ParseException {
@@ -61,27 +62,31 @@ public class Main {
             while (true) {
                 System.out.println("------------------------");
                 System.out.println("What do you want to do: ");
-                System.out.println("1. View all enrolment \n2. Adding new enrolment \n3. Delete enrolment \n4. Update enrolment\n5. Return to Main Menu");
-                System.out.println("6. Exit");
+                System.out.println("1. View all enrolment \n2. View one enrolment \n3. Adding new enrolment \n4. Delete enrolment \n5. Update enrolment\n6. Return to Main Menu");
+                System.out.println("7. Exit");
                 System.out.println("------------------------");
                 System.out.print("Your choice: ");
                 String choice = sc.next();
                 if (choice.equals("1")) {
                     enrolmentCommand.getAll();
                     break;
-                } else if (choice.equals("2")) {
+                } else if (choice.equals("2")){
+                    enrolmentCommand.getOne();
+                    break;
+                }
+                else if (choice.equals("3")) {
                     enrolmentCommand.add();
                     break;
-                } else if (choice.equals("3")) {
+                } else if (choice.equals("4")) {
                     enrolmentCommand.delete();
                     break;
-                } else if (choice.equals("4")) {
+                } else if (choice.equals("5")) {
                     enrolmentCommand.update();
                     break;
-                } else if (choice.equals("5")) {
+                } else if (choice.equals("6")) {
                     mainMenu();
                     return;
-                } else if (choice.equals("6")) {
+                } else if (choice.equals("7")) {
                     return;
                 } else {
                     System.out.println("Wrong input");
