@@ -391,6 +391,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                 if (number> 0 && number<=enrolments.size()){
                     //remove with index
                     enrolments.remove(number-1);
+                    System.out.println("Successfully Delete");
                     break;
                 }
             }else{
