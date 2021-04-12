@@ -3,9 +3,9 @@ package rmit;
 public class Course {
     private String id;
     private String name;
-    private String numOfCre;
+    private Integer numOfCre;
 
-    public Course(String id, String name, String numOfCre) {
+    public Course(String id, String name, Integer numOfCre) {
         this.id = id;
         this.name = name;
         this.numOfCre = numOfCre;
@@ -27,11 +27,11 @@ public class Course {
         this.name = name;
     }
 
-    public String getNumOfCre() {
+    public Integer getNumOfCre() {
         return numOfCre;
     }
 
-    public void setNumOfCre(String numOfCre) {
+    public void setNumOfCre(Integer numOfCre) {
         this.numOfCre = numOfCre;
     }
 

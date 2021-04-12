@@ -66,7 +66,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             }
 
             //create the course object
-            Course course = new Course(token[3], token[4], token[5]);
+            Course course = new Course(token[3], token[4], Integer.parseInt(token[5]));
             //add course to list and check to not have duplicate
             if (!checkDupCourse(course)){
                 courses.add(course);
