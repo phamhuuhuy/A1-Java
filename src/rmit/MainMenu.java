@@ -18,7 +18,7 @@ public class MainMenu {
     }
 
 
-    public void mainMenu() throws FileNotFoundException, ParseException {
+    public void menu() throws FileNotFoundException, ParseException {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.println("------------------------");
@@ -74,7 +74,7 @@ public class MainMenu {
                 enrolmentCommand.update();
                 break;
             } else if (choice.equals("6")) {
-                mainMenu();
+                menu();
                 return;
             } else if (choice.equals("7")) {
                 return;
@@ -118,7 +118,7 @@ public class MainMenu {
                 enrolmentCommand.printAllCoursesOfferedFor1Sem();
                 break;
             } else if (choice.equals("4")) {
-                mainMenu();
+                menu();
                 return;
             } else if (choice.equals("5")) {
                 return;

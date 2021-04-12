@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
         MainMenu menu = new MainMenu();
-        menu.mainMenu();
+        menu.menu();
     }
 
 
