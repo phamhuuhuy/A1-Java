@@ -11,6 +11,13 @@ public class StudentEnrolment {
         this.course = course;
         this.sem = sem;
     }
+    public StudentEnrolment() {
+
+    }
+
+
+
+
 
     public Student getStudent() {
         return student;

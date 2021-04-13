@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface StudentEnrolmentManager {
-    void add();
+    boolean add();
     void delete();
     void update();
     void getOne();

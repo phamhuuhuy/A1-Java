@@ -1,6 +1,7 @@
 package rmit;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Student {
@@ -12,7 +13,6 @@ public class Student {
     public Student(String id, String name, Date birthday) {
         this.id = id;
         this.name = name;
-
         this.birthday = birthday;
     }
 
@@ -44,8 +44,11 @@ public class Student {
 
     @Override
     public String toString() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+        String strDate = dateFormat.format(birthday);
         return "Student " +
                 "id= '" + id + '\'' +
-                ", name= '" + name + '\'';
+                ", name= '" + name + '\''+", birthday= " +strDate;
     }
+
 }

@@ -11,7 +11,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     private ArrayList<StudentEnrolment> enrolments = new ArrayList<>();
 
     //List of students
-    private HashSet<Student> students = new LinkedHashSet<>();
+    private ArrayList<Student> students = new ArrayList<>();
 
     //List of courses
     private ArrayList<Course> courses = new ArrayList<>();
@@ -19,12 +19,18 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     //List of semester
     private HashSet<String> sems = new LinkedHashSet<>();
 
+    //constructor
     public StudentEnrolmentCommand() throws FileNotFoundException, ParseException {
-        getEnrolment();
-
+        getEnrolment(fileNameInput());
     }
 
-    public String fileNameInput(){
+    //constructor
+    public StudentEnrolmentCommand(String fileName) throws FileNotFoundException, ParseException {
+        getEnrolment(fileName);
+    }
+
+    //input file name
+    private String fileNameInput(){
         while (true){
             System.out.print("Do you want to add your file? (y/n): ");
             Scanner input = new Scanner(System.in);
@@ -42,10 +48,19 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
 
     }
 
+    //total number of enrolments
+    public int numberOfEnrolments(){
+        int count = 0;
+        for (StudentEnrolment enrolment: enrolments){
+            count++;
+        }
+        return enrolments.size();
+    }
+
     //Get information from CSV file
-    private void getEnrolment() throws FileNotFoundException, ParseException {
+    private void getEnrolment(String fileName) throws FileNotFoundException, ParseException {
         //Read the file
-        File fileCSV = new File(fileNameInput());
+        File fileCSV = new File(fileName);
         Scanner input = new Scanner(fileCSV);
         HashSet<String> idStu = new HashSet<>();
         while (input.hasNext()){
@@ -253,12 +268,12 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     }
 
     //check id student input
-    private Student checkStudent(HashSet<Student> studentList){
+    private Student checkStudent(ArrayList<Student> studentList, Scanner input){
          while (true){
              System.out.println("-----All students can choose-----");
              showStudent();
              System.out.print("Choose id student: ");
-             Scanner input = new Scanner(System.in);
+
              String idStu = input.nextLine();
              for (Student student: students){
                  //check id student and return student object
@@ -282,11 +297,11 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     }
 
     //check id course input
-    private Course checkCourse(){
+    private Course checkCourse(Scanner input){
         while (true){
             System.out.println("-----All course that student can enroll-----");
             showCourse();
-            Scanner input = new Scanner(System.in);
+
             System.out.print("Choose id course: ");
             String idCour = input.nextLine();
             for (Course course: courses){
@@ -311,11 +326,11 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     }
 
     //check semester input
-    private String checkSem(){
+    private String checkSem(Scanner input){
         while (true){
             System.out.println("-----All semester that student can enroll-----");
             showSem();
-            Scanner input = new Scanner(System.in);
+
             System.out.print("Choose sem: ");
             String sem = input.nextLine();
             for (String semester: sems){
@@ -329,14 +344,17 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         }
     }
 
-    //function check enrolment duplicate when adding
-    private void checkDupEnrol(){
+    //function add
+    @Override
+    public boolean add() {
+        //calling function
+        Scanner input = new Scanner(System.in);
         //calling check student function
-        Student stu = checkStudent(students);
+        Student stu = checkStudent(students, input);
         //calling check course function
-        Course cou = checkCourse();
+        Course cou = checkCourse(input);
         //calling check semester function
-        String sem = checkSem();
+        String sem = checkSem(input);
         //create the enrolment object
         StudentEnrolment enroll = new StudentEnrolment(stu, cou, sem);
 
@@ -344,7 +362,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         //go all enrolment
         for (StudentEnrolment enrolment: enrolments){
             //check duplicate enrolment
-            if (enrolment.getStudent().equals(stu) && enrolment.getCourse().equals(cou) && enrolment.getSem().equals(sem)){
+            if (enrolment.getStudent().getId().equals(stu.getId()) && enrolment.getCourse().getId().equals(cou.getId()) && enrolment.getSem().equals(sem)){
                 checkDup = true;
                 System.out.println("This enrolment has already existed");
                 break;
@@ -355,17 +373,11 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             enrolments.add(enroll);
             System.out.println("Enroll successfully!!");
             System.out.println("---------------------");
+            return true;
         }
-    }
-
-    //function add
-    @Override
-    public void add() {
-        //calling function
-        checkDupEnrol();
+        return false;
 
     }
-
 
     @Override
     public void delete() {
@@ -404,7 +416,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
     }
 
     //check input String is numeric or not
-    public static boolean isNumeric(String strNum) {
+    private static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
         }
@@ -465,10 +477,10 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             //choose 1 for adding
             if (choice.equals("1")){
 
-                Course cour = checkCourse();
+                Course cour = checkCourse(input);
 
 
-                String sem = checkSem();
+                String sem = checkSem(input);
 
 
                 StudentEnrolment enroll = new StudentEnrolment(student, cour, sem);
@@ -563,7 +575,6 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
                     student = stu;
                     checkStu = false;
                     wrong = false;
-
                     break;
                 }
             }
@@ -581,10 +592,7 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         Boolean checkSem = true;
         String semester =null;
         while (checkSem){
-            if (enrolmentListOfStudent.isEmpty()){
-                System.out.println("Dont have any enrolment of student for observe");
-                return;
-            }
+
             Boolean wrong = true;
             if (semesterEnrolment.isEmpty()){
                 System.out.println("Dont have any semester of student and course for observe");
@@ -620,6 +628,10 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
         Boolean checkCourse = true;
         Course course =null;
         while(checkCourse){
+            if (enrolmentListOfStudent.isEmpty()){
+                System.out.println("Dont have any enrolment of student for observe");
+                return;
+            }
             Boolean wrong = true;
 
             System.out.println("------All course-----");
@@ -662,8 +674,5 @@ public class StudentEnrolmentCommand implements StudentEnrolmentManager{
             count++;
         }
     }
-
-
-
 
 }
